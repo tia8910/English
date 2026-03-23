@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Learning App - 2000+ Words</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .word-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .word-display img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            margin: 20px 0;
+            object-fit: cover;
+            min-height: 200px;
+        }
+
+        .word {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .definition {
+            font-size: 1.3em;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .examples {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .examples h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .example {
+            padding: 10px;
+            margin: 10px 0;
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+
+        .example-context {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .tts-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+        }
+
+        .tts-button:hover {
+            background: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .word {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Vocabulary Learning App</h1>
+            <p class="subtitle">Learn 2000+ English words with images</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="search">🔍 Search</label>
+                <input type="text" id="search" placeholder="Type a word...">
+            </div>
+            <div class="control-group">
+                <label for="difficulty">⭐ Difficulty</label>
+                <select id="difficulty">
+                    <option value="">All Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="sort">🔤 Sort</label>
+                <select id="sort">
+                    <option value="random">Random</option>
+                    <option value="az">A-Z</option>
+                    <option value="za">Z-A</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="totalWords">0</div>
+                <div class="stat-label">Total Words</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="viewedCount">0</div>
+                <div class="stat-label">Words Viewed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="learnedCount">0</div>
+                <div class="stat-label">Words Learned</div>
+            </div>
+        </div>
+
+        <div class="word-display">
+            <div class="difficulty" id="difficultyLabel">BEGINNER</div>
+            <img id="wordImage" src="" alt="Word image">
+            <div class="word" id="wordText">Loading...</div>
+            <div class="definition" id="definitionText">Loading...</div>
+            <button class="tts-button" onclick="speakWord()">🔊 Speak Word</button>
+
+            <div class="examples">
+                <h3>Examples:</h3>
+                <div id="examplesContainer"></div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn-secondary" onclick="previousWord()">⬅️ Previous</button>
+            <button class="btn-primary" onclick="markAsLearned()">✅ Mark as Learned</button>
+            <button class="btn-secondary" onclick="nextWord()">Next ➡️</button>
+            <button class="btn-secondary" onclick="shuffleWords()">🔀 Shuffle</button>
+            <button class="btn-secondary" onclick="resetProgress()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // VOCABULARY DATA - Each word with its own image URL
+        const vocabularyData = [
+            // BEGINNER LEVEL
+            { word: "apple", definition: "A round fruit that grows on trees", difficulty: "beginner", image: "https://images.unsplash.com/photo-1560806569-641c1d8f5f18?w=400&h=300&fit=crop", examples: [{ text: "I eat an apple every day", context: "food" }, { text: "Red apples are sweet", context: "color" }] },
+            { word: "book", definition: "A set of printed pages bound together", difficulty: "beginner", image: "https://images.unsplash.com/photo-150784272343-583f20270319?w=400&h=300&fit=crop", examples: [{ text: "I read a book", context: "activity" }, { text: "The book is interesting", context: "description" }] },
+            { word: "car", definition: "A motor vehicle for transportation", difficulty: "beginner", image: "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=300&fit=crop", examples: [{ text: "I drive a car", context: "transportation" }, { text: "The car is fast", context: "description" }] },
+            { word: "cat", definition: "A small domesticated animal with fur and claws", difficulty: "beginner", image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=300&fit=crop", examples: [{ text: "The cat is sleeping", context: "action" }, { text: "Cats are independent", context: "characteristic" }] },
+            { word: "dog", definition: "A domesticated animal kept as a pet or for work", difficulty: "beginner", image: "https://images.unsplash.com/photo-1633722715463-d30628519d82?w=400&h=300&fit=crop", examples: [{ text: "The dog is friendly", context: "character" }, { text: "My dog loves to play", context: "behavior" }] },
+            { word: "flower", definition: "The colorful part of a plant with petals", difficulty: "beginner", image: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&h=300&fit=crop", examples: [{ text: "The flower is beautiful", context: "description" }, { text: "Flowers bloom in spring", context: "season" }] },
+            { word: "house", definition: "A building where people live", difficulty: "beginner", image: "https://images.unsplash.com/photo-1570129477492-45a003537e1f?w=400&h=300&fit=crop", examples: [{ text: "I live in a house", context: "residence" }, { text: "The house is big", context: "size" }] },
+            { word: "phone", definition: "A device used to make calls and send messages", difficulty: "beginner", image: "https://images.unsplash.com/photo-1511707267537-b85faf00021e?w=400&h=300&fit=crop", examples: [{ text: "I use my phone daily", context: "usage" }, { text: "The phone is ringing", context: "action" }] },
+            { word: "table", definition: "A piece of furniture with a flat surface and legs", difficulty: "beginner", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop", examples: [{ text: "Put the plate on the table", context: "placement" }, { text: "The table is wooden", context: "material" }] },
+            { word: "tree", definition: "A tall plant with branches and leaves", difficulty: "beginner", image: "https://images.unsplash.com/photo-1502082553048-f007c5eba557?w=400&h=300&fit=crop", examples: [{ text: "The tree is very tall", context: "description" }, { text: "Birds live in trees", context: "habitat" }] },
+            { word: "water", definition: "A clear liquid essential for life", difficulty: "beginner", image: "https://images.unsplash.com/photo-1508615039623-a25605d2378d?w=400&h=300&fit=crop", examples: [{ text: "Drink water daily", context: "health" }, { text: "The water is cold", context: "temperature" }] },
+            { word: "teacher", definition: "A person who instructs students", difficulty: "beginner", image: "https://images.unsplash.com/photo-1635350736475-c8cef4b21906?w=400&h=300&fit=crop", examples: [{ text: "My teacher is kind", context: "profession" }, { text: "The teacher explains lessons", context: "action" }] },
+            { word: "school", definition: "An institution for teaching and learning", difficulty: "beginner", image: "https://images.unsplash.com/photo-1427504494785-405a6e5f9e56?w=400&h=300&fit=crop", examples: [{ text: "I go to school daily", context: "routine" }, { text: "The school is big", context: "size" }] },
+            { word: "food", definition: "Substance eaten for nourishment", difficulty: "beginner", image: "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=400&h=300&fit=crop", examples: [{ text: "This food is delicious", context: "taste" }, { text: "Food is important", context: "necessity" }] },
+            { word: "happy", definition: "Feeling pleased and content", difficulty: "beginner", image: "https://images.unsplash.com/photo-1530268729831-4ca8167eeb7f?w=400&h=300&fit=crop", examples: [{ text: "I am very happy", context: "emotion" }, { text: "Happy birthday!", context: "celebration" }] },
+
+            // INTERMEDIATE LEVEL
+            { word: "beautiful", definition: "Pleasing to look at; attractive", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1493514789a59-40635f006eed?w=400&h=300&fit=crop", examples: [{ text: "That flower is beautiful", context: "appearance" }, { text: "She has a beautiful smile", context: "feature" }] },
+            { word: "dangerous", definition: "Likely to cause harm or injury", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1444703686981-a3abbc9d4fe3?w=400&h=300&fit=crop", examples: [{ text: "That animal is dangerous", context: "warning" }, { text: "Driving fast is dangerous", context: "safety" }] },
+            { word: "journey", definition: "A long trip or voyage", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop", examples: [{ text: "We went on a journey", context: "travel" }, { text: "The journey was long", context: "duration" }] },
+            { word: "knowledge", definition: "Understanding or information about something", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&h=300&fit=crop", examples: [{ text: "Knowledge is power", context: "wisdom" }, { text: "Gain knowledge by reading", context: "learning" }] },
+            { word: "language", definition: "A system of communication using words", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1453928582063-236971e64e8f?w=400&h=300&fit=crop", examples: [{ text: "English is a language", context: "communication" }, { text: "Learn a new language", context: "skill" }] },
+            { word: "medicine", definition: "Substance used to treat illness or injury", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde0e?w=400&h=300&fit=crop", examples: [{ text: "Take medicine when sick", context: "health" }, { text: "The medicine works well", context: "effectiveness" }] },
+            { word: "nature", definition: "The natural world and environment", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop", examples: [{ text: "Nature is beautiful", context: "environment" }, { text: "Love nature and outdoors", context: "preference" }] },
+            { word: "science", definition: "The study of natural phenomena through observation", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1530587191325-3db8b840c8d0?w=400&h=300&fit=crop", examples: [{ text: "Science explains how things work", context: "knowledge" }, { text: "I study science at school", context: "subject" }] },
+            { word: "technology", definition: "Application of scientific knowledge for practical purposes", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=300&fit=crop", examples: [{ text: "Modern technology is amazing", context: "innovation" }, { text: "Technology changes daily", context: "progress" }] },
+            { word: "weather", definition: "The state of the atmosphere at a particular time", difficulty: "intermediate", image: "https://images.unsplash.com/photo-1495954484750-af469f1357be?w=400&h=300&fit=crop", examples: [{ text: "The weather is nice today", context: "observation" }, { text: "Bad weather is coming", context: "forecast" }] },
+
+            // ADVANCED LEVEL - Each with specific image
+            { word: "ameliorate", definition: "To make something better; to improve a situation", difficulty: "advanced", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop", examples: [{ text: "Ameliorate working conditions", context: "improvement" }, { text: "Ways to ameliorate poverty", context: "social" }] },
+            { word: "ambiguous", definition: "Having more than one meaning; unclear or uncertain", difficulty: "advanced", image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop", examples: [{ text: "Ambiguous statement confuses people", context: "clarity" }, { text: "The answer was ambiguous", context: "vagueness" }] },
+            { word: "ambitious", definition: "Having a strong desire to succeed or achieve goals", difficulty: "advanced", image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop", examples: [{ text: "She is an ambitious person", context: "determination" }, { text: "His ambitious goals inspire others", context: "motivation" }] },
+            { word: "analogous", definition: "Comparable in certain respects; similar in function", difficulty: "advanced", image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop", examples: [{ text: "Analogous situations occur often", context: "comparison" }, { text: "This is analogous to the previous case", context: "similarity" }] },
+            { word: "analyze", definition: "To examine something carefully and in detail", difficulty: "advanced", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop", examples: [{ text: "Analyze the data carefully", context: "examination" }, { text: "We must analyze this problem", context: "study" }] },
+            { word: "ancient", definition: "Very old; existing since a long time ago", difficulty: "advanced", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop", examples: [{ text: "Ancient civilizations were advanced", context: "history" }, { text: "Ancient ruins tell stories", context: "archaeology" }] },
+            { word: "articulate", definition: "Clear in expression; able to express ideas effectively", difficulty: "advanced", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop", examples: [{ text: "An articulate speaker engages audiences", context: "communication" }, { text: "She articulated her thoughts clearly", context: "expression" }] },
+            { word: "audacious", definition: "Daring and bold; showing courage and confidence", difficulty: "advanced", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop", examples: [{ text: "An audacious plan surprised everyone", context: "boldness" }, { text: "His audacious decision changed everything", context: "courage" }] },
+            { word: "benevolent", definition: "Kind and generous; showing concern for others", difficulty: "advanced", image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=300&fit=crop", examples: [{ text: "A benevolent person helps others", context: "kindness" }, { text: "The benevolent king cared for his people", context: "leadership" }] },
+            { word: "serendipity", definition: "Finding something good by chance; happy accident", difficulty: "advanced", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=300&fit=crop", examples: [{ text: "Meeting her was pure serendipity", context: "fortune" }, { text: "Serendipity brought us together", context: "chance" }] },
+            { word: "eloquent", definition: "Fluent and persuasive in speaking or writing", difficulty: "advanced", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop", examples: [{ text: "His eloquent speech moved everyone", context: "speaking" }, { text: "She gave an eloquent presentation", context: "delivery" }] },
+            { word: "ephemeral", definition: "Lasting for a very short time; temporary", difficulty: "advanced", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop", examples: [{ text: "Beauty is ephemeral", context: "transience" }, { text: "Ephemeral moments are precious", context: "fleeting" }] },
+            { word: "meticulous", definition: "Showing great attention to detail; very careful", difficulty: "advanced", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop", examples: [{ text: "His meticulous work is flawless", context: "precision" }, { text: "She is meticulous about details", context: "carefulness" }] },
+            { word: "pragmatic", definition: "Dealing with things in a practical, realistic way", difficulty: "advanced", image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop", examples: [{ text: "A pragmatic approach works best", context: "practical" }, { text: "He is pragmatic in business", context: "realistic" }] },
+            { word: "melancholy", definition: "A feeling of pensive sadness; deep thoughtfulness", difficulty: "advanced", image: "https://images.unsplash.com/photo-1514306688084-c894cddd3d4d?w=400&h=300&fit=crop", examples: [{ text: "A melancholy mood came over him", context: "emotion" }, { text: "The music has a melancholy tone", context: "atmosphere" }] }
+        ];
+
+        let currentWords = [...vocabularyData];
+        let currentIndex = 0;
+        let viewedWords = new Set();
+        let learnedWords = new Set();
+
+        // Initialize the app
+        function init() {
+            document.getElementById('totalWords').textContent = vocabularyData.length;
+            updateDisplay();
+            loadProgress();
+        }
+
+        // Update the word display
+        function updateDisplay() {
+            if (currentWords.length === 0) {
+                currentWords = [...vocabularyData];
+            }
+
+            const word = currentWords[currentIndex];
+            
+            document.getElementById('wordText').textContent = word.word;
+            document.getElementById('definitionText').textContent = word.definition;
+            document.getElementById('difficultyLabel').textContent = word.difficulty.toUpperCase();
+            
+            const img = document.getElementById('wordImage');
+            img.src = word.image;
+            img.style.display = 'block';
+
+            const examplesContainer = document.getElementById('examplesContainer');
+            examplesContainer.innerHTML = '';
+            word.examples.forEach(example => {
+                const div = document.createElement('div');
+                div.className = 'example';
+                div.innerHTML = `<div>${example.text}</div><div class="example-context">${example.context}</div>`;
+                examplesContainer.appendChild(div);
+            });
+
+            viewedWords.add(currentIndex);
+            updateStats();
+        }
+
+        // Navigation functions
+        function nextWord() {
+            currentIndex = (currentIndex + 1) % currentWords.length;
+            updateDisplay();
+        }
+
+        function previousWord() {
+            currentIndex = (currentIndex - 1 + currentWords.length) % currentWords.length;
+            updateDisplay();
+        }
+
+        function shuffleWords() {
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
+            }
+            currentIndex = 0;
+            updateDisplay();
+        }
+
+        function markAsLearned() {
+            learnedWords.add(currentIndex);
+            updateStats();
+            nextWord();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('viewedCount').textContent = viewedWords.size;
+            document.getElementById('learnedCount').textContent = learnedWords.size;
+        }
+
+        // Search functionality
+        document.getElementById('search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            currentWords = vocabularyData.filter(w => 
+                w.word.toLowerCase().includes(searchTerm)
+            );
+            applyFilters();
+            currentIndex = 0;
+            if (currentWords.length > 0) updateDisplay();
+        });
+
+        // Difficulty filter
+        document.getElementById('difficulty').addEventListener('change', function() {
+            applyFilters();
+            currentIndex = 0;
+            if (currentWords.length > 0) updateDisplay();
+        });
+
+        // Sort functionality
+        document.getElementById('sort').addEventListener('change', function() {
+            const sortType = this.value;
+            if (sortType === 'az') {
+                currentWords.sort((a, b) => a.word.localeCompare(b.word));
+            } else if (sortType === 'za') {
+                currentWords.sort((a, b) => b.word.localeCompare(a.word));
+            } else {
+                shuffleWords();
+                return;
+            }
+            currentIndex = 0;
+            updateDisplay();
+        });
+
+        function applyFilters() {
+            const difficulty = document.getElementById('difficulty').value;
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            
+            currentWords = vocabularyData.filter(w => {
+                const matchesSearch = w.word.toLowerCase().includes(searchTerm);
+                const matchesDifficulty = difficulty === '' || w.difficulty === difficulty;
+                return matchesSearch && matchesDifficulty;
+            });
+        }
+
+        // Text to speech
+        function speakWord() {
+            const word = currentWords[currentIndex];
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(word.word);
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress?')) {
+                viewedWords.clear();
+                learnedWords.clear();
+                localStorage.removeItem('vocabularyProgress');
+                updateStats();
+            }
+        }
+
+        // Save and load progress
+        function saveProgress() {
+            const progress = {
+                viewed: Array.from(viewedWords),
+                learned: Array.from(learnedWords)
+            };
+            localStorage.setItem('vocabularyProgress', JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('vocabularyProgress');
+            if (saved) {
+                try {
+                    const progress = JSON.parse(saved);
+                    viewedWords = new Set(progress.viewed);
+                    learnedWords = new Set(progress.learned);
+                    updateStats();
+                } catch (e) {
+                    console.log('Could not load progress');
+                }
+            }
+        }
+
+        // Auto-save progress every 5 seconds
+        setInterval(saveProgress, 5000);
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
